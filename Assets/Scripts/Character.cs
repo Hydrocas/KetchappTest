@@ -18,7 +18,8 @@ public class Character : MonoBehaviour
         [SerializeField] private Transform  m_stack           = null;
         [Space]
         [SerializeField] private float      m_forwardSpeed   = 0f;
-        [SerializeField] private float      m_rightSpeed     = 0f;
+        [SerializeField] private float      m_horizontalSpeed     = 1f;
+        [SerializeField] private float      m_horizontalSmooth    = 0.01f;
         [Space]
         [SerializeField] private float      m_collectWidth   = 1f;
         [SerializeField] private LayerMask  m_collectLayer   = default;
@@ -31,6 +32,8 @@ public class Character : MonoBehaviour
     #region // ==============================[Private Variables]============================== //
 
         private float m_horizontalLimit;
+        private float m_horizontalVelocity;
+        private float m_horizontalPosition;
         private List<Geode> m_geodesList;
 
         private const float c_characterWidth = 1.5f;
@@ -64,11 +67,12 @@ public class Character : MonoBehaviour
 	    {
             transform.position += Vector3.forward * m_forwardSpeed * Time.deltaTime;
 
-            float horizontalAxis     = Controller.Instance.CurrentDrag.x;
-            float horizontalPosition = m_visualCharacter.localPosition.x + horizontalAxis * m_rightSpeed * Time.deltaTime;
-            horizontalPosition       = Mathf.Clamp(horizontalPosition, -m_horizontalLimit / 2, m_horizontalLimit / 2);
+            m_horizontalPosition += Controller.Instance.CurrentDrag.x * m_horizontalSpeed * Time.deltaTime;
+            m_horizontalPosition = Mathf.Clamp(m_horizontalPosition, -m_horizontalLimit / 2, m_horizontalLimit / 2);
 
-            m_visualCharacter.localPosition = new Vector3(horizontalPosition, 0, 0);
+            float horizontalDamping = Mathf.SmoothDamp(m_visualCharacter.localPosition.x, m_horizontalPosition, ref m_horizontalVelocity, m_horizontalSmooth);
+
+            m_visualCharacter.localPosition = new Vector3(horizontalDamping, 0, 0);
         }
 
         private void Collect()
