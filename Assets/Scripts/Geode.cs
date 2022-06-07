@@ -14,11 +14,13 @@ public class Geode : MonoBehaviour
 
     #region // ==============================[Inspector Variables]============================== //
 
-        [SerializeField] private float m_inspectorVariables = 0f;
+        //[SerializeField] private float m_inspectorVariables = 0f;
 
     #endregion
 
     #region // ==============================[Private Variables]============================== //
+
+    private float m_snakeMouvementVelocity;
 
     #endregion
 
@@ -31,6 +33,37 @@ public class Geode : MonoBehaviour
         public void Init()
         {
 	    
+        }
+
+        public void SnakeMouvement(Transform toFollow, float smooth)
+	    {
+            Vector3 newPosition = transform.localPosition;
+            newPosition.x = Mathf.SmoothDamp(newPosition.x, toFollow.localPosition.x, ref m_snakeMouvementVelocity, smooth);
+
+            transform.localPosition = newPosition;
+        }
+
+        public void SetCollected()
+	    {
+            gameObject.layer = 0;
+	    }
+
+        public List<Geode> CollectOther(float collectSize, int layerMask)
+	    {
+            List<Geode> geodes = new List<Geode>();
+            Collider[] results = Physics.OverlapSphere(transform.position + Vector3.up / 2, collectSize / 2, layerMask);
+
+            foreach (Collider result in results)
+            {
+                Geode geode = result.GetComponent<Geode>();
+
+                if (geode == null || geode == this)
+                    continue;
+
+                geodes.Add(geode);
+            }
+
+            return geodes;
         }
 
     #endregion
