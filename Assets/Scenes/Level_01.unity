@@ -309,7 +309,8 @@ MonoBehaviour:
   m_visualCharacter: {fileID: 1311157124}
   m_stack: {fileID: 280815498}
   m_forwardSpeed: 10
-  m_rightSpeed: 45
+  m_horizontalSpeed: 2
+  m_horizontalSmooth: 0.3
   m_collectWidth: 2
   m_collectLayer:
     serializedVersion: 2
@@ -704,8 +705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84cd280e75c0c634a93165f6236d2c2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxMagnitude: 0.02
-  m_deadZone: 0.001
+  m_smoothDrag: 0
 --- !u!4 &895825339
 Transform:
   m_ObjectHideFlags: 0
